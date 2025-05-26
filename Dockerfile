@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 
 
+
 WORKDIR /app
 
 COPY . .
@@ -36,4 +37,8 @@ RUN pip --no-cache-dir install -r requirements.txt \
     && apt-get install --no-install-recommends -y ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-CMD ["python", "run.py"]
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
