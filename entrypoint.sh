@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
-mkdir -p /config/cookies
+mkdir -p /app/config/cookies
 
 if [ -f /etc/secrets/cookies.txt ]; then
   cp /etc/secrets/cookies.txt /config/cookies/cookies.txt
