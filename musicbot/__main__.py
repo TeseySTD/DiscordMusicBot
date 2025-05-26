@@ -1,5 +1,8 @@
 import sys
+import os
 from traceback import print_exc
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 import discord
 from discord.ext import commands
@@ -8,6 +11,23 @@ from config import config
 from musicbot import loader
 from musicbot.bot import MusicBot
 from musicbot.utils import check_dependencies, read_shutdown
+
+# —————— HTTP keep-alive server ——————
+class KeepAliveHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(b"Bot is running!")
+
+def start_keep_alive_server():
+    port = int(os.environ.get("PORT", "8080"))
+    server = HTTPServer(("", port), KeepAliveHandler)
+    print(f"🌍 Fake server running on port {port}")
+    server.serve_forever()
+
+threading.Thread(target=start_keep_alive_server, daemon=True).start()
+# ————————————————————————————————————
 
 
 initial_extensions = [
