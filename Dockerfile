@@ -1,13 +1,18 @@
 FROM python:3.11-slim
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
 ARG HEROKU_DB
 ENV HEROKU_DB=$HEROKU_DB
-
-# config env vars
 ENV BOT_TOKEN=YOUR_TOKEN_GOES_HERE
 ENV SPOTIFY_ID=
 ENV SPOTIFY_SECRET=
@@ -29,9 +34,5 @@ ENV COOKIE_PATH=config/cookies/cookies.txt
 ENV GLOBAL_DISABLE_AUTOJOIN_VC=False
 ENV ANNOUNCE_DISCONNECT=True
 ENV ENABLE_PLAYLISTS=True
-
-RUN pip --no-cache-dir install -r requirements.txt \
-    && apt-get update \
-    && apt-get install --no-install-recommends ffmpeg -y
 
 CMD ["python", "run.py"]
