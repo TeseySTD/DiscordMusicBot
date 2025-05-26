@@ -64,12 +64,21 @@ _downloader = YoutubeDL(
         "format": "bestaudio/best",
         "extract_flat": True,
         "noplaylist": True,
-        # default_search shouldn't be needed as long as
-        # we don't pass plain text to the downloader.
-        # still leaving it just in case
         "default_search": "auto",
-        "cookiefile": config.COOKIE_PATH,
         "quiet": True,
+        # Use multiple extraction strategies
+        "extractor_args": {
+            "youtubetab": {
+                "skip":"webpage",
+            },
+            "youtube": {
+                "player_skip": [
+                    "webpage",
+                    "configs",
+                ],
+                "visitor_data":"VISITOR_DATA_VALUE_HERE"
+            }
+        },
     }
 )
 _preloading = {}
@@ -190,9 +199,7 @@ def _load_song(track: str) -> Union[Optional[Song], List[Song]]:
 
 
 def _parse_expire(url: str) -> Optional[int]:
-    expire = (
-        ("&" + urlparse(url).query).partition("&expire=")[2].partition("&")[0]
-    )
+    expire = ("&" + urlparse(url).query).partition("&expire=")[2].partition("&")[0]
     try:
         return int(expire)
     except ValueError:
@@ -207,9 +214,7 @@ async def preload(song: Song, bot: MusicBot) -> bool:
         expire = _parse_expire(song.url)
         if expire is None or expire == _parse_expire(song.webpage_url):
             return True
-        if datetime.now(timezone.utc) < datetime.fromtimestamp(
-            expire, timezone.utc
-        ):
+        if datetime.now(timezone.utc) < datetime.fromtimestamp(expire, timezone.utc):
             return True
 
     future = _preloading.get(song)
@@ -242,6 +247,4 @@ async def preload(song: Song, bot: MusicBot) -> bool:
 
 
 async def _run_sync(f, *args):
-    return await asyncio.get_running_loop().run_in_executor(
-        _executor, f, *args
-    )
+    return await asyncio.get_running_loop().run_in_executor(_executor, f, *args)
