@@ -31,7 +31,8 @@ ENV GLOBAL_DISABLE_AUTOJOIN_VC=False
 ENV ANNOUNCE_DISCONNECT=True
 ENV ENABLE_PLAYLISTS=True
 
-RUN apt-get update \
+RUN pip --no-cache-dir install -r requirements.txt \
+    && apt-get update \
     && apt-get install --no-install-recommends -y ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
