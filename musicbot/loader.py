@@ -64,11 +64,10 @@ _downloader = YoutubeDL(
         "format": "bestaudio/best",
         "extract_flat": True,
         "noplaylist": True,
-        # default_search shouldn't be needed as long as
-        # we don't pass plain text to the downloader.
-        # still leaving it just in case
         "default_search": "auto",
-        "cookiefile": config.COOKIE_PATH,
+        # "cookiefile": config.COOKIE_PATH,
+        "username": config.AUTH_USERNAME,
+        "password": config.AUTH_PASSWORD,
         "quiet": True,
     }
 )

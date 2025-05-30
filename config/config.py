@@ -74,6 +74,9 @@ class Config:
         ".mov",
     )
 
+    AUTH_USERNAME = os.getenv("AUTH_USERNAME")
+    AUTH_PASSWORD = os.getenv("AUTH_PASSWORD")
+
     COOKIE_PATH = "config/cookies/cookies.txt"
 
     GLOBAL_DISABLE_AUTOJOIN_VC = False
